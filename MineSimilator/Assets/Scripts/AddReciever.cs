@@ -90,7 +90,6 @@ public class AddReciever : MonoBehaviour
 
         PlayerPrefs.SetString("RecieverName"+PlayerPrefs.GetInt("currentSaveReciever"),currentRecieverName);
         readData.signalList.Add(newReciever);
-
     }
 
     public void AddNameReciever()
