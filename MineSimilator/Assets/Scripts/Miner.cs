@@ -59,9 +59,9 @@ public class Miner : MonoBehaviour
             timer-=Time.deltaTime;
             if(timer<0)
             {
-                //TagManager.Instance.UpdateMineRecieverList();
-                //readData.MoveBySignal(gameObject,mineRecieverNameList,mineRecieverCountList);
-                //timer=timerStartValue;
+                TagManager.Instance.UpdateMinersRecieverListCount();
+                readData.MoveBySignal(gameObject,mineRecieverNameList,mineRecieverCountList);
+                timer=timerStartValue;
             }
 
         }

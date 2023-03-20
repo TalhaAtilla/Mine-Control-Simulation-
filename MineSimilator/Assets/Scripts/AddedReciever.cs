@@ -47,8 +47,6 @@ public class AddedReciever : MonoBehaviour
                 SaveRecieverDataBase();
             }
         }
-        
-        Debug.Log(PlayerPrefs.GetInt("currentSaveReciever"));
     }
 
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -19,7 +20,7 @@ public class TagManager : Singleton<TagManager>
     [SerializeField]
     private ReadData readData;
 
-    private List<GameObject> tagList=new List<GameObject>();
+    public List<GameObject> tagList=new List<GameObject>();
     private string[] data;
     
     void Start()
@@ -31,7 +32,12 @@ public class TagManager : Singleton<TagManager>
         {
            var newTag= Instantiate(tagPref,startPos,Quaternion.identity);
             newTag.GetComponent<Miner>().readData = readData;
-            newTag.GetComponent<Miner>().mineRecieverNameList.Add(readData.signalList[i].name);
+            tagList.Add(newTag);
+            for (int x = 0; x < readData.signalList.Count; x++)
+            {
+                newTag.GetComponent<Miner>().mineRecieverNameList.Add(readData.signalList[x].name);
+                newTag.GetComponent<Miner>().mineRecieverCountList.Add(0);
+            }
             newTag.name = i.ToString();
             newTag.SetActive(false);
             Debug.Log(newTag);
@@ -44,33 +50,69 @@ public class TagManager : Singleton<TagManager>
         
     }
 
+    private void AddTag(int number)
+    {
+        for (int i = maxTagCount; i < number+1; i++)
+        {
+            
+            var newTag = Instantiate(tagPref, startPos, Quaternion.identity);
+            newTag.GetComponent<Miner>().readData = readData;
+            for (int x = 0; x < readData.signalList.Count; x++)
+            {
+                newTag.GetComponent<Miner>().mineRecieverNameList.Add(readData.signalList[x].name);
+                newTag.GetComponent<Miner>().mineRecieverCountList.Add(0);
+            }
+            newTag.name = i.ToString();
+            newTag.SetActive(false);
 
-   
+            Debug.Log(newTag);
+        }
+        maxTagCount= number+1;
+    }
+
+
     public void UpdateMinersRecieverListCount()
     {
         StartCoroutine(GetRequest("http://127.0.0.1:8080/sql/sql6.php"));
-
+        for (int j = 0; j < data.Count(); j++)
+        {
+            string[] fin = data[j].Split("/");
+            Debug.Log(fin[0]);
             for (int i = 0; i < tagList.Count; i++)
             {
-                string[] fin = data[i].Split("/");
-                Debug.Log(fin[0]);
+                
 
                 if (tagList[i].name == fin[0])
                 {
+                tagList[i].GetComponent<Miner>().mineRecieverNameList.Clear();
+                tagList[i].GetComponent<Miner>().mineRecieverCountList.Clear();
+                for (int x = 0; x < readData.signalList.Count; x++)
+                {
+                    tagList[i].GetComponent<Miner>().mineRecieverNameList.Add(readData.signalList[x].name);
+                    tagList[i].GetComponent<Miner>().mineRecieverCountList.Add(0);
+                }
+
 
                 var mineRecieverList = tagList[i].GetComponent<Miner>().mineRecieverNameList;
+                var mineRecieverCounts = tagList[i].GetComponent<Miner>().mineRecieverCountList;
+
                     for (int x = 0; x < mineRecieverList.Count; x++)
                     {
                         if (mineRecieverList[x] == fin[3])
                         {
-                            //mineRecieverList[x].signalCount = Convert.ToInt32(fin[2]);
-
+                           mineRecieverCounts[x] = Convert.ToInt32(fin[2]);
                         }
                     }
-                }
-            }
-        
 
+                tagList[i].SetActive(true);
+            }
+            else if (Convert.ToInt16(fin[0])>maxTagCount)
+            {
+                AddTag(Convert.ToInt16(fin[0]));
+            }
+            }              
+        }
+            
     }
 
     
@@ -99,7 +141,6 @@ public class TagManager : Singleton<TagManager>
                     Debug.Log(raw);
                     //example raw= 35/-13,33/-32,
                     data = raw.Split(",");
-
                     break;
             }
         }

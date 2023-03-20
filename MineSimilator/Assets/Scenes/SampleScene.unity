@@ -8648,8 +8648,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tagPref: {fileID: 4742233419612897223, guid: 6b412c452c76d424eaf90236e5d4fc99, type: 3}
   startPos: {x: 0, y: 0, z: 0}
-  maxTagCount: 1
+  maxTagCount: 600
   readData: {fileID: 1740868881}
+  tagList: []
 --- !u!1 &945586848
 GameObject:
   m_ObjectHideFlags: 0
@@ -12421,7 +12422,7 @@ GameObject:
   - component: {fileID: 1450176866}
   - component: {fileID: 1450176865}
   m_Layer: 0
-  m_Name: A1
+  m_Name: 89
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14807,7 +14808,7 @@ GameObject:
   - component: {fileID: 1703833545}
   - component: {fileID: 1703833544}
   m_Layer: 0
-  m_Name: A2
+  m_Name: 91
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15044,7 +15045,6 @@ MonoBehaviour:
   - {fileID: 1703833543}
   - {fileID: 716882078}
   - {fileID: 1006110467}
-  tamplist: []
   path: {fileID: 268825297}
 --- !u!4 &1740868882
 Transform:
