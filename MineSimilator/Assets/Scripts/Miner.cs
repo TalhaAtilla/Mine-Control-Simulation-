@@ -1,26 +1,8 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-//[System.Serializable]
-//public class MinerList
-//{
-//    public List<RecieverList> minerRecieverList= new List<RecieverList>();
-//}
-
-//[System.Serializable]
-//public class RecieverList
-//{
-//    public List<Receiver> recieverList=new List<Receiver>();
-//}
-
-//[System.Serializable]
-//public class Receiver
-//{
-//    public string recieverName;
-//    public int signalCount;
-//}
 public class Miner : MonoBehaviour
 {
     [SerializeField]
@@ -33,16 +15,15 @@ public class Miner : MonoBehaviour
     private float timer;
 
     [SerializeField]
-    private bool timerIsActive=false;
-
-
-    public List<int> mineRecieverCountList=new List<int>();
-    public List<string> mineRecieverNameList=new List<string>();
+    public bool timerIsActive=false;
    
     private float timerStartValue;
 
     private bool InDanger=false;
     private SpriteRenderer sprite;
+    public int MinerNumber { get{return minerNumber;} set{ minerNumber=value;} }
+
+    public List<GameObject> gameObjects = new List<GameObject>();
 
     void Start()
     {
@@ -59,8 +40,8 @@ public class Miner : MonoBehaviour
             timer-=Time.deltaTime;
             if(timer<0)
             {
-                TagManager.Instance.UpdateMinersRecieverListCount();
-                readData.MoveBySignal(gameObject,mineRecieverNameList,mineRecieverCountList);
+                
+                readData.MoveBySignal(gameObject,minerNumber);
                 timer=timerStartValue;
             }
 

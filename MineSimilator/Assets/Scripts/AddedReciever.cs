@@ -16,6 +16,8 @@ public class AddedReciever : MonoBehaviour
 
     private int currentSaveReciever;
 
+    public List<GameObject> gameObjects= new List<GameObject>();
+
     public bool IsBreak { get
     {
         return isBreak;
@@ -47,6 +49,8 @@ public class AddedReciever : MonoBehaviour
                 SaveRecieverDataBase();
             }
         }
+        
+        Debug.Log(PlayerPrefs.GetInt("currentSaveReciever"));
     }
 
 
