@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
 using System;
+using static RecieverManager;
 
 public class StationManager : MonoBehaviour
 {
@@ -29,7 +30,21 @@ public class StationManager : MonoBehaviour
     private GameObject StationsParent;
 
     [SerializeField]
+    private StationManager self;
+
+    [SerializeField]
     private UIManager UI;
+
+    public class GameStation
+    {
+        public int sayi { get; set; }
+        public string ad { get; set; }
+        public float posx { get; set; }
+        public float posy { get; set; }
+        public float posz { get; set; }
+    }
+
+    public List<GameStation> gameStations = new List<GameStation>();
 
     private Receiver tempStation = new Receiver();
     private string currentStationName;
@@ -37,47 +52,55 @@ public class StationManager : MonoBehaviour
 
     private void Awake()
     {
-
         tempStation.recieverName = "A";
         tempStation.signalCount = 0;
         StationNamePanel.SetActive(false);
 
         for (int i = 1; i <= PlayerPrefs.GetInt("currentSaveStation"); i++)
         {
-            var x = PlayerPrefs.GetFloat("posx" + i);
-            var y = PlayerPrefs.GetFloat("posy" + i);
-            var z = PlayerPrefs.GetFloat("posz" + i);
+            var x = PlayerPrefs.GetFloat("Sposx" + i);
+            var y = PlayerPrefs.GetFloat("Sposy" + i);
+            var z = PlayerPrefs.GetFloat("Sposz" + i);
+
             var desPos = new Vector3(x, y, z);
 
             var newStation = Instantiate(StationPref, desPos, Quaternion.identity, StationsParent.transform);
+            newStation.GetComponent<AddedStation>().StationManagg = self;
             newStation.GetComponent<AddedStation>().IsBreak = true;
             for (int j = 1; j < 8; j++)
             {
-                UI.stationTexts[j + (8 * (Convert.ToInt16(PlayerPrefs.GetString("StationName" + i)) - 1))] = newStation.GetComponent<AddedStation>().gameObjects[j - 1].GetComponent<TextMeshPro>();
+                UI.stationTexts[j + (8 * PlayerPrefs.GetInt("currentSaveStation") - 1)] = newStation.GetComponent<AddedStation>().gameObjects[j - 1].GetComponent<TextMeshPro>();
             }
-            newStation.GetComponent<AddedStation>().gameObjects[8].GetComponent<TextMeshPro>().text = "Ýstasyon "+PlayerPrefs.GetString("StationName" + i);
-            stations.Add(newStation);
+            newStation.GetComponent<AddedStation>().gameObjects[8].GetComponent<TextMeshPro>().text = "Ýstasyon "+ PlayerPrefs.GetString("StationName" + i);
             newStation.name = PlayerPrefs.GetString("StationName" + i);
+            stations.Add(newStation);
 
         }
     }
 
     public void ProduceNewStation()
     {
-        currentStationName = StationNameInput.text;
-        StationNamePanel.SetActive(false);
-        var newStation = Instantiate(StationPref);
-        PlayerPrefs.SetInt("currentSaveStation", PlayerPrefs.GetInt("currentSaveStation") + 1);
+        if (StationNameInput.text != string.Empty && stations.Exists(e => e.name == StationNameInput.text) == false)
+        {
+            currentStationName = StationNameInput.text;
+            StationNamePanel.SetActive(false);
+            var newStation = Instantiate(StationPref);
+            newStation.GetComponent<AddedStation>().StationManagg = self;
+            PlayerPrefs.SetInt("currentSaveStation", PlayerPrefs.GetInt("currentSaveStation") + 1);
+            if (Convert.ToInt16(currentStationName) < 9)
+            {
+                for (int i = 1; i < 9; i++)
+                {
+                    UI.stationTexts[i + (8 * (Convert.ToInt16(currentStationName) - 1))] = newStation.GetComponent<AddedStation>().gameObjects[i - 1].GetComponent<TextMeshPro>();
+                }
+            }
+            newStation.GetComponent<AddedStation>().gameObjects[8].GetComponent<TextMeshPro>().text = "Ýstasyon " + currentStationName;
+            newStation.name = currentStationName;
+            stations.Add(newStation);
 
-        for (int i = 1; i < 9 ; i++) 
-        { 
-            UI.stationTexts[i + ( 8 * (Convert.ToInt16(currentStationName) -1 ) ) ] = newStation.GetComponent<AddedStation>().gameObjects[i-1].GetComponent<TextMeshPro>();
+
+            PlayerPrefs.SetString("StationName" + PlayerPrefs.GetInt("currentSaveStation"), currentStationName);
         }
-
-        newStation.GetComponent<AddedStation>().gameObjects[8].GetComponent<TextMeshPro>().text = "Ýstasyon "+currentStationName;
-        newStation.name = currentStationName;
-        stations.Add(newStation);
-        PlayerPrefs.SetString("StationName" + PlayerPrefs.GetInt("currentSaveStation"), currentStationName);
 
     }
 
@@ -108,11 +131,26 @@ public class StationManager : MonoBehaviour
         {
             if (stations[i].name==StationNameInputRM.text)
             {
-                stations[i].SetActive(false);
+                var dst = stations[i];
+                stations.Remove(stations[i]);
+                
+                for (int j = 0; j < stations.Count; j++)
+                {
+                    PlayerPrefs.SetFloat("Sposx" + (j + 1), stations[j].transform.position.x);
+                    PlayerPrefs.SetFloat("Sposy" + (j + 1), stations[j].transform.position.y);
+                    PlayerPrefs.SetFloat("Sposz" + (j + 1), stations[j].transform.position.z);
+                    PlayerPrefs.SetString("StationName" + (j + 1), stations[j].name);
+                }
+                Destroy(dst);
+                PlayerPrefs.SetInt("currentSaveStation", PlayerPrefs.GetInt("currentSaveStation") - 1);
+                PlayerPrefs.Save();
             }
         }
+        
+
 
         StationRemovePanel.SetActive(false);
     }
+
 
 }

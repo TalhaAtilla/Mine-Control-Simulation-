@@ -14,7 +14,12 @@ public class AddedReciever : MonoBehaviour
 
     private bool isBreak=false;
 
+    public int Sayı;
+
     private int currentSaveReciever;
+
+    [SerializeField]
+    public RecieverManager RecieverManagg;
 
     public List<GameObject> gameObjects= new List<GameObject>();
 
@@ -41,13 +46,15 @@ public class AddedReciever : MonoBehaviour
             }
             if(Input.GetMouseButtonDown(0))
             {
-                isBreak=true;
-                PlayerPrefs.SetFloat("posx"+PlayerPrefs.GetInt("currentSaveReciever"),transform.position.x);
-                PlayerPrefs.SetFloat("posy"+PlayerPrefs.GetInt("currentSaveReciever"),transform.position.y);
-                PlayerPrefs.SetFloat("posz"+PlayerPrefs.GetInt("currentSaveReciever"),transform.position.z);
+                isBreak =true;
+                
+                PlayerPrefs.SetFloat("Rposx" +PlayerPrefs.GetInt("currentSaveReciever"),transform.position.x);
+                PlayerPrefs.SetFloat("Rposy"+PlayerPrefs.GetInt("currentSaveReciever"),transform.position.y);
+                PlayerPrefs.SetFloat("Rposz"+PlayerPrefs.GetInt("currentSaveReciever"),transform.position.z);
                 //kayıt burda bıraktığımız an çalışacak
                 SaveRecieverDataBase();
             }
+            Sayı = PlayerPrefs.GetInt("currentSaveReciever");
         }
         
         Debug.Log(PlayerPrefs.GetInt("currentSaveReciever"));

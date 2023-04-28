@@ -14,7 +14,12 @@ public class AddedStation : MonoBehaviour
 
     private bool isBreak = false;
 
+    public int Sayý;
+
     private int currentSaveStation;
+    
+    [SerializeField]
+    public StationManager StationManagg;
 
     public List<GameObject> gameObjects = new List<GameObject>();
 
@@ -44,12 +49,15 @@ public class AddedStation : MonoBehaviour
             }
             if (Input.GetMouseButtonDown(0))
             {
+
                 isBreak = true;
-                PlayerPrefs.SetFloat("posx" + PlayerPrefs.GetInt("currentSaveStation"), transform.position.x);
-                PlayerPrefs.SetFloat("posy" + PlayerPrefs.GetInt("currentSaveStation"), transform.position.y);
-                PlayerPrefs.SetFloat("posz" + PlayerPrefs.GetInt("currentSaveStation"), transform.position.z);
+                PlayerPrefs.SetFloat("Sposx" + PlayerPrefs.GetInt("currentSaveStation"), transform.position.x);
+                PlayerPrefs.SetFloat("Sposy" + PlayerPrefs.GetInt("currentSaveStation"), transform.position.y);
+                PlayerPrefs.SetFloat("Sposz" + PlayerPrefs.GetInt("currentSaveStation"), transform.position.z);
+
                 //kayýt burda býraktýðýmýz an çalýþacak
             }
+            Sayý = PlayerPrefs.GetInt("currentSaveStation");
         }
 
         Debug.Log(PlayerPrefs.GetInt("currentSaveStation"));

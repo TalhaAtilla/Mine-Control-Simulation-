@@ -6,6 +6,9 @@ using System;
 using UnityEngine.Networking;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
+using Unity.VisualScripting;
+using System.Text.RegularExpressions;
 
 public class UIManager : MonoBehaviour
 {
@@ -35,6 +38,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private bool timerIsActive = true;
+
+    private List<string> textList = new List<string>();
 
     private bool isShowPanelActive=false;
 
@@ -154,7 +159,6 @@ public class UIManager : MonoBehaviour
 
         }
         FillTables();
-        ColorChange();
         
 
     }
@@ -179,38 +183,341 @@ public class UIManager : MonoBehaviour
         {
             while (nowid-1 < dataList[i].id && dataList[i].id < (nowid + 3))
             {
-                Debug.Log(dataList[i].id);
+                string[] laz = dataList[i].deger.ToString().Select(x => x.ToString()).ToArray();
+                int lenn = laz.Length;
+                UnityEngine.Debug.Log(lenn);
+                string grd1 = null;
+                string grd2 = null;
                 if (dataList[i].ad.ToLower() == "ch4")
                 {
-                    gridTexts[(count *8)+ 1].GetComponent<TextMeshProUGUI>().text = dataList[i].deger.ToString();
+
+                    if (dataList[i].deger >= 200)//ch4
+                    {
+                        if (stationTexts[(count * 8) + 1] != null)
+                        {
+                            stationTexts[(count * 8) + 1].GetComponent<TextMeshPro>().color = Color.red;
+                        }
+
+                        gridTexts[(count * 8) + 1].GetComponent<TextMeshProUGUI>().color = Color.red;
+                    }
+                    else if (dataList[i].deger >= 150)
+                    {
+                        if (stationTexts[(count * 8) + 1] != null)
+                        {
+                            stationTexts[(count * 8) + 1].GetComponent<TextMeshPro>().color = Color.yellow;
+                        }
+
+                        gridTexts[(count * 8) + 1].GetComponent<TextMeshProUGUI>().color = Color.yellow;
+
+                    }
+                    else
+                    {
+                        if (stationTexts[(count * 8) + 1] != null)
+                        {
+                            stationTexts[(count * 8) + 1].GetComponent<TextMeshPro>().color = Color.white;
+                        }
+
+                        gridTexts[(count * 8) + 1].GetComponent<TextMeshProUGUI>().color = Color.black;
+
+                    }
+
+                    if (lenn >= 3)
+                    {
+                        for (int x = lenn - 2; x < lenn; x++)
+                        {
+                            grd1 += laz[x];
+                        }
+                        for (int x = 0; x < lenn - 2; x++)
+                        {
+                            grd2 += laz[x];
+                        }
+                        gridTexts[(count * 8) + 1].GetComponent<TextMeshProUGUI>().text = grd2 + "." + grd1 + " ppm";
+                    }
+                    else if (lenn == 2)
+                    {
+                        gridTexts[(count * 8) + 1].GetComponent<TextMeshProUGUI>().text = "0" + "." + dataList[i].deger.ToString() + " ppm";
+                    }
+                    else
+                    {
+                        gridTexts[(count * 8) + 1].GetComponent<TextMeshProUGUI>().text = "0" + "." + "0" + dataList[i].deger.ToString() + " ppm";
+                    }
+
+
+
                 }
                 else if (dataList[i].ad.ToLower() == "co")
                 {
-                    gridTexts[(count * 8)+ 2].GetComponent<TextMeshProUGUI>().text = dataList[i].deger.ToString();
+
+                    if (dataList[i].deger >= 30)//co
+                    {
+                        if (stationTexts[(count * 8) + 2] != null)
+                        {
+                            stationTexts[(count * 8) + 2].GetComponent<TextMeshPro>().color = Color.red;
+                        }
+                        
+                        gridTexts[(count * 8) + 2].GetComponent<TextMeshProUGUI>().color = Color.red;
+
+                    }
+                    else if (dataList[i].deger >= 20)
+                    {
+                        if (stationTexts[(count * 8) + 2] != null)
+                        {
+                            stationTexts[(count * 8) + 2].GetComponent<TextMeshPro>().color = Color.yellow;
+                        }
+                        
+                        gridTexts[(count * 8) + 2].GetComponent<TextMeshProUGUI>().color = Color.yellow;
+
+                    }
+                    else
+                    {
+                        if (stationTexts[(count * 8) + 2] != null)
+                        {
+                            stationTexts[(count * 8) + 2].GetComponent<TextMeshPro>().color = Color.white;
+                        }
+                        
+                        gridTexts[(count * 8) + 2].GetComponent<TextMeshProUGUI>().color = Color.black;
+
+                    }
+
+                    grd1 = dataList[i].deger.ToString();
+
+                    gridTexts[(count * 8) + 2].GetComponent<TextMeshProUGUI>().text = grd1 + " ppm";
                 }
                 else if (dataList[i].ad.ToLower() == "o2")
                 {
-                    gridTexts[(count * 8) + 3].GetComponent<TextMeshProUGUI>().text = dataList[i].deger.ToString();
+
+                    if (dataList[i].deger <= 190)//o2
+                    {
+                        if (stationTexts[(count * 8) + 3] != null)
+                        {
+                            stationTexts[(count * 8) + 3].GetComponent<TextMeshPro>().color = Color.red;
+                        }
+                        
+                        gridTexts[(count * 8) + 3].GetComponent<TextMeshProUGUI>().color = Color.red;
+
+                    }
+                    else if (dataList[i].deger >= 230)
+                    {
+                        if (stationTexts[(count * 8) + 3] != null)
+                        {
+                            stationTexts[(count * 8) + 3].GetComponent<TextMeshPro>().color = Color.red;
+                        }
+                        
+                        gridTexts[(count * 8) + 3].GetComponent<TextMeshProUGUI>().color = Color.red;
+
+                    }
+                    else
+                    {
+                        if (stationTexts[(count * 8) + 3] != null)
+                        {
+                            stationTexts[(count * 8) + 3].GetComponent<TextMeshPro>().color = Color.white;
+                        }
+                        
+                        gridTexts[(count * 8) + 3].GetComponent<TextMeshProUGUI>().color = Color.black;
+
+                    }
+
+                    if (lenn >= 3)
+                    {
+                        for (int x = lenn - 1; x < lenn; x++)
+                        {
+                            grd1 += laz[x];
+                        }
+                        for (int x = 0; x < lenn - 1; x++)
+                        {
+                            grd2 += laz[x];
+                        }
+                        gridTexts[(count * 8) + 3].GetComponent<TextMeshProUGUI>().text = grd2 + "." + grd1 + " %";
+                    }
+                    else if (lenn == 2)
+                    {
+                        gridTexts[(count * 8) + 3].GetComponent<TextMeshProUGUI>().text = laz[0] + "." + laz[1] + " %";
+                    }
+                    else
+                    {
+                        gridTexts[(count * 8) + 3].GetComponent<TextMeshProUGUI>().text = "0" + "." + dataList[i].deger.ToString() + " %";
+                    }
                 }
                 else if (dataList[i].ad.ToLower() == "h2s")
                 {
-                    gridTexts[(count * 8) + 4].GetComponent<TextMeshProUGUI>().text = dataList[i].deger.ToString();
+
+                    if (dataList[i].deger >= 20)//h2s
+                    {
+                        if (stationTexts[(count * 8) + 4] != null)
+                        {
+                            stationTexts[(count * 8) + 4].GetComponent<TextMeshPro>().color = Color.red;
+                        }
+                        
+                        gridTexts[(count * 8) + 4].GetComponent<TextMeshProUGUI>().color = Color.red;
+
+                    }
+                    else if (dataList[i].deger >= 10)
+                    {
+                        if (stationTexts[(count * 8) + 4] != null)
+                        {
+                            stationTexts[(count * 8) + 4].GetComponent<TextMeshPro>().color = Color.yellow;
+                        }
+                        
+                        gridTexts[(count * 8) + 4].GetComponent<TextMeshProUGUI>().color = Color.yellow;
+
+                    }
+                    else
+                    {
+                        if (stationTexts[(count * 8) + 4] != null)
+                        {
+                            stationTexts[(count * 8) + 4].GetComponent<TextMeshPro>().color = Color.white;
+                        }
+                        
+                        gridTexts[(count * 8) + 4].GetComponent<TextMeshProUGUI>().color = Color.black;
+
+                    }
+
+                    grd1 = dataList[i].deger.ToString();
+
+                    gridTexts[(count * 8) + 4].GetComponent<TextMeshProUGUI>().text = grd1 + " ppm";
                 }
                 else if (dataList[i].ad.ToLower() == "hh")
                 {
-                    gridTexts[(count * 8) + 5].GetComponent<TextMeshProUGUI>().text = dataList[i].deger.ToString();
+
+                    if (dataList[i].deger >= 100)//hh
+                    {
+                        if (stationTexts[(count * 8) + 5] != null)
+                        {
+                            stationTexts[(count * 8) + 5].GetComponent<TextMeshPro>().color = Color.red;
+                        }
+                        
+                        gridTexts[(count * 8) + 5].GetComponent<TextMeshProUGUI>().color = Color.red;
+
+                    }
+                    else if (dataList[i].deger >= 50)
+                    {
+                        if (stationTexts[(count * 8) + 5] != null)
+                        {
+                            stationTexts[(count * 8) + 5].GetComponent<TextMeshPro>().color = Color.yellow;
+                        }
+                        
+                        gridTexts[(count * 8) + 5].GetComponent<TextMeshProUGUI>().color = Color.yellow;
+
+                    }
+                    else
+                    {
+                        if (stationTexts[(count * 8) + 5] != null)
+                        {
+                            stationTexts[(count * 8) + 5].GetComponent<TextMeshPro>().color = Color.white;
+                        }
+                        
+                        gridTexts[(count * 8) + 5].GetComponent<TextMeshProUGUI>().color = Color.black;
+
+                    }
+
+                    if (lenn >= 3)
+                    {
+                        for (int x = lenn - 1; x < lenn; x++)
+                        {
+                            grd1 += laz[x];
+                        }
+                        for (int x = 0; x < lenn - 1; x++)
+                        {
+                            grd2 += laz[x];
+                        }
+                        gridTexts[(count * 8) + 5].GetComponent<TextMeshProUGUI>().text = grd2 + "." + grd1 + " m/sn";
+                    }
+                    else if (lenn == 2)
+                    {
+                        gridTexts[(count * 8) + 5].GetComponent<TextMeshProUGUI>().text = laz[0] + "." + laz[1] + " m/sn";
+                    }
+                    else
+                    {
+                        gridTexts[(count * 8) + 5].GetComponent<TextMeshProUGUI>().text = "0" + "." + dataList[i].deger.ToString() + " m/sn";
+                    }
+
                 }
                 else if (dataList[i].ad.ToLower() == "ısı")
                 {
-                    gridTexts[(count * 8) + 6].GetComponent<TextMeshProUGUI>().text = dataList[i].deger.ToString();
+
+                    if (dataList[i].deger >= 400)//ısı
+                    {
+                        if (stationTexts[(count * 8) + 6] != null)
+                        {
+                            stationTexts[(count * 8) + 6].GetComponent<TextMeshPro>().color = Color.red;
+                        }
+                        
+                        gridTexts[(count * 8) + 6].GetComponent<TextMeshProUGUI>().color = Color.red;
+
+                    }
+                    else if (dataList[i].deger >= 300)
+                    {
+                        if (stationTexts[(count * 8) + 6] != null)
+                        {
+                            stationTexts[(count * 8) + 6].GetComponent<TextMeshPro>().color = Color.yellow;
+                        }
+                        
+                        gridTexts[(count * 8) + 6].GetComponent<TextMeshProUGUI>().color = Color.yellow;
+
+                    }
+                    else
+                    {
+                        if (stationTexts[(count * 8) + 6] != null)
+                        {
+                            stationTexts[(count * 8) + 6].GetComponent<TextMeshPro>().color = Color.white;
+                        }
+                        
+                        gridTexts[(count * 8) + 6].GetComponent<TextMeshProUGUI>().color = Color.black;
+
+                    }
+
+
+                    if (lenn >= 3)
+                    {
+                        for (int x = lenn - 1; x < lenn; x++)
+                        {
+                            grd1 += laz[x];
+                        }
+                        for (int x = 0; x < lenn - 1; x++)
+                        {
+                            grd2 += laz[x];
+                        }
+                        gridTexts[(count * 8) + 6].GetComponent<TextMeshProUGUI>().text = grd2 + "." + grd1 + " °C";
+                    }
+                    else if (lenn == 2)
+                    {
+                        gridTexts[(count * 8) + 6].GetComponent<TextMeshProUGUI>().text = laz[0] + "." + laz[1] + " °C";
+                    }
+                    else
+                    {
+                        gridTexts[(count * 8) + 6].GetComponent<TextMeshProUGUI>().text = "0" + "." + dataList[i].deger.ToString() + " °C";
+                    }
+
                 }
                 else if (dataList[i].ad.ToLower() == "basınc")
                 {
-                    gridTexts[(count * 8) + 7].GetComponent<TextMeshProUGUI>().text = dataList[i].deger.ToString();
+                    grd1 = dataList[i].deger.ToString();
+
+                    gridTexts[(count * 8) + 7].GetComponent<TextMeshProUGUI>().text = grd1 + " hPa";
                 }
                 else if (dataList[i].ad.ToLower() == "nem")
                 {
-                    gridTexts[(count * 8) + 8].GetComponent<TextMeshProUGUI>().text = dataList[i].deger.ToString();
+
+                    if (lenn >= 3)
+                    {
+                        for (int x = lenn - 1; x < lenn; x++)
+                        {
+                            grd1 += laz[x];
+                        }
+                        for (int x = 0; x < lenn - 1; x++)
+                        {
+                            grd2 += laz[x];
+                        }
+                        gridTexts[(count * 8) + 8].GetComponent<TextMeshProUGUI>().text = grd2 + "." + grd1 + " %";
+                    }
+                    else if (lenn == 2)
+                    {
+                        gridTexts[(count * 8) + 8].GetComponent<TextMeshProUGUI>().text = laz[0] + "." + laz[1] + " %";
+                    }
+                    else
+                    {
+                        gridTexts[(count * 8) + 8].GetComponent<TextMeshProUGUI>().text = "0" + "." + dataList[i].deger.ToString() + " %";
+                    }
                 }
                 i++;
             }
@@ -243,11 +550,11 @@ public class UIManager : MonoBehaviour
             {
                 case UnityWebRequest.Result.ConnectionError:
                 case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    UnityEngine.Debug.LogError(pages[page] + ": Error: " + webRequest.error);
 
                     break;
                 case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    UnityEngine.Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
                     string raw = webRequest.downloadHandler.text;
@@ -264,100 +571,6 @@ public class UIManager : MonoBehaviour
                         dataList.Sort();
                     }
                     break;
-            }
-        }
-    }
-    private void ColorChange()
-    {
-        int count = 0;
-        for (int i = 1; i < stationTexts.Count; i++)
-        {
-            if (i/8 == 0)
-            {
-                count++;
-            }
-            
-            if (Convert.ToInt32(stationTexts[(count * 8) + 1].text) >= 2)//ch4
-            {
-                stationTexts[(count * 8) + 1].GetComponent<TextMeshPro>().color = Color.red;
-            }
-            else if (Convert.ToInt32(stationTexts[(count * 8) + 1].text) >= 1.5)
-            {
-                stationTexts[(count * 8) + 1].GetComponent<TextMeshPro>().color = Color.yellow;
-            }
-            else
-            {
-                stationTexts[(count * 8) + 1].GetComponent<TextMeshPro>().color = Color.white;
-            }
-
-
-            if (Convert.ToInt32(stationTexts[(count * 8) + 2].text) >= 30)//co
-            {
-                stationTexts[(count * 8) + 2].GetComponent<TextMeshPro>().color = Color.red;
-            }
-            else if (Convert.ToInt32(stationTexts[(count * 8) + 2].text) >= 20)
-            {
-                stationTexts[(count * 8) + 2].GetComponent<TextMeshPro>().color = Color.yellow;
-            }
-            else
-            {
-                stationTexts[(count * 8) + 2].GetComponent<TextMeshPro>().color = Color.white;
-            }
-
-
-            if (Convert.ToInt32(stationTexts[(count * 8) +3].text)/10 <= 19)//o2
-            {
-                stationTexts[(count * 8) + 3].GetComponent<TextMeshPro>().color = Color.red;
-            }
-            else if (Convert.ToInt32(stationTexts[(count * 8) + 3].text) / 10 >= 23)
-            {
-                stationTexts[(count * 8) + 3].GetComponent<TextMeshPro>().color = Color.red;
-            }
-            else
-            {
-                stationTexts[(count * 8) + 3].GetComponent<TextMeshPro>().color = Color.white;
-            }
-
-
-            if (Convert.ToInt32(stationTexts[(count * 8) +4].text) >= 20)//h2s
-            {
-                stationTexts[(count * 8) + 4].GetComponent<TextMeshPro>().color = Color.red;
-            }
-            else if (Convert.ToInt32(stationTexts[(count * 8) + 4].text) >= 10)
-            {
-                stationTexts[(count * 8) + 4].GetComponent<TextMeshPro>().color = Color.yellow;
-            }
-            else
-            {
-                stationTexts[(count * 8) + 4].GetComponent<TextMeshPro>().color = Color.white;
-            }
-
-
-            if (Convert.ToInt32(stationTexts[(count * 8) + 6].text) / 10 >= 40)//ısı
-            {
-                stationTexts[(count * 8) + 6].GetComponent<TextMeshPro>().color = Color.red;
-            }
-            else if (Convert.ToInt32(stationTexts[(count * 8) + 6].text) / 10 >= 30)
-            {
-                stationTexts[(count * 8) + 6].GetComponent<TextMeshPro>().color = Color.yellow;
-            }
-            else
-            {
-                stationTexts[(count * 8) + 6].GetComponent<TextMeshPro>().color = Color.white;
-            }
-
-
-            if (Convert.ToInt32(stationTexts[(count * 8) + 5].text) >= 10)//hh
-            {
-                stationTexts[(count * 8) + 5].GetComponent<TextMeshPro>().color = Color.red;
-            }
-            else if (Convert.ToInt32(stationTexts[(count * 8) + 5].text) >= 5)
-            {
-                stationTexts[(count * 8) + 5].GetComponent<TextMeshPro>().color = Color.yellow;
-            }
-            else
-            {
-                stationTexts[(count * 8) + 5].GetComponent<TextMeshPro>().color = Color.white;
             }
         }
     }
